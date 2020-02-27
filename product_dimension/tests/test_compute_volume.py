@@ -1,6 +1,36 @@
 # Copyright 2015 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo.tests.common import TransactionCase
+from odoo.exceptions import ValidationError
+from odoo.addons.product.tests.common import TestProductCommon
+
+
+class TestNegative(TestProductCommon):
+
+    def test_it_computes_length_negatives_product_variant(self):
+        with self.assertRaises(ValidationError):
+            self.product_1.length = -6.
+
+        with self.assertRaises(ValidationError):
+            self.product_1.height = -2.
+
+        with self.assertRaises(ValidationError):
+            self.product_1.width = -10.
+
+        with self.assertRaises(ValidationError):
+            product = self.product_1
+            product |= self.product_2
+            product.write({'length': -6})
+
+    def test_it_computes_length_negatives_product_template(self):
+        with self.assertRaises(ValidationError):
+            self.product_7_template.length = -6.
+
+        with self.assertRaises(ValidationError):
+            self.product_7_template.height = -2.
+
+        with self.assertRaises(ValidationError):
+            self.product_7_template.width = -10.
 
 
 class TestComputeVolumeOnProduct(TransactionCase):
@@ -58,6 +88,8 @@ class TestComputeVolumeOnTemplate(TransactionCase):
             120,
             self.template.volume
         )
+
+
 
     def setUp(self):
         super(TestComputeVolumeOnTemplate, self).setUp()

@@ -22,25 +22,25 @@ msgstr ""
 #: model:ir.model.fields,field_description:product_dimension.field_product_product_dimensional_uom_id
 #: model:ir.model.fields,field_description:product_dimension.field_product_template_dimensional_uom_id
 msgid "Dimensional UoM"
-msgstr ""
+msgstr "Unidad de medida"
 
 #. module: product_dimension
 #: model:ir.ui.view,arch_db:product_dimension.product_normal_form_view
 #: model:ir.ui.view,arch_db:product_dimension.product_template_only_form_view
 msgid "Dimensions"
-msgstr ""
+msgstr "Dimensiones"
 
 #. module: product_dimension
 #: model:ir.model.fields,field_description:product_dimension.field_product_product_height
 #: model:ir.model.fields,field_description:product_dimension.field_product_template_height
 msgid "Height"
-msgstr ""
+msgstr "Altura"
 
 #. module: product_dimension
 #: model:ir.model.fields,field_description:product_dimension.field_product_product_length
 #: model:ir.model.fields,field_description:product_dimension.field_product_template_length
 msgid "Length"
-msgstr ""
+msgstr "Longitud"
 
 #. module: product_dimension
 #: model:ir.model,name:product_dimension.model_product_product
@@ -56,10 +56,28 @@ msgstr "Plantilla de producto"
 #: model:ir.model.fields,help:product_dimension.field_product_product_dimensional_uom_id
 #: model:ir.model.fields,help:product_dimension.field_product_template_dimensional_uom_id
 msgid "UoM for length, height, width"
-msgstr ""
+msgstr "Unidad de medida para longitud, altura y anchura"
 
 #. module: product_dimension
 #: model:ir.model.fields,field_description:product_dimension.field_product_product_width
 #: model:ir.model.fields,field_description:product_dimension.field_product_template_width
 msgid "Width"
-msgstr ""
+msgstr "Anchura"
+
+#. module: product_dimension
+#: code:addons/product_dimension/models/product.py:26
+#, python-format
+msgid "Height can not be negative"
+msgstr "La altura no puede ser negativa"
+
+#. module: product_dimension
+#: code:addons/product_dimension/models/product.py:28
+#, python-format
+msgid "Width can not be negative"
+msgstr "La anchura no puede ser negativa"
+
+#. module: product_dimension
+#: code:addons/product_dimension/models/product.py:30
+#, python-format
+msgid "Length can not be negative"
+msgstr "La longitud no puede ser negativa"
