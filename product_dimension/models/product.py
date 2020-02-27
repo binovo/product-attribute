@@ -3,8 +3,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 
-from odoo import models, fields, api
-
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 class Product(models.Model):
     _inherit = 'product.product'
@@ -19,6 +19,17 @@ class Product(models.Model):
         return [
             ('category_id', '=', self.env.ref('product.uom_categ_length').id)
         ]
+
+    @api.one
+    @api.constrains('width', 'height', 'length')
+    def _check_negative_values(self):
+        if self.height < 0:
+            raise ValidationError(_('Height can not be negative'))
+        if self.width < 0:
+            raise ValidationError(_('Width can not be negative'))
+        if self.length < 0:
+            raise ValidationError(_('Length can not be negative'))
+        return True
 
     length = fields.Float()
     height = fields.Float()
