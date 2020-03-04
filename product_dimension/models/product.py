@@ -31,15 +31,53 @@ class Product(models.Model):
             raise ValidationError(_('Length can not be negative'))
         return True
 
-    length = fields.Float()
-    height = fields.Float()
-    width = fields.Float()
+    length = fields.Float('Longitud del producto',  compute='_compute_template_variant_length', inverse='_set_length', store=True)
+    height = fields.Float('Altitud del producto',  compute='_compute_template_variant_height', inverse='_set_height', store=True)
+    width = fields.Float('Anchura del producto',  compute='_compute_template_variant_width', inverse='_set_width', store=True)
     dimensional_uom_id = fields.Many2one(
         'product.uom',
         'Dimensional UoM',
         domain=lambda self: self._get_dimension_uom_domain(),
         help='UoM for length, height, width')
 
+    @api.depends('length', 'product_tmpl_id.length')
+    def _compute_template_variant_length(self):
+        length_field = self.filtered(lambda template: len(template.product_tmpl_id) == 1)
+        for length_v in length_field:
+            length_v.length = length_v.product_tmpl_id.length
+        for template in (self - length_field):
+            template.length = False
+
+    @api.one
+    def _set_length(self):
+        if len(self.product_tmpl_id) == 1:
+            self.product_tmpl_id.length = self.length
+
+    @api.depends('height', 'product_tmpl_id.height')
+    def _compute_template_variant_height(self):
+        height_field = self.filtered(lambda template: len(template.product_tmpl_id) == 1)
+        for height_v in height_field:
+            height_v.height = height_v.product_tmpl_id.height
+        for template in (self - height_field):
+            template.height = False
+
+    @api.one
+    def _set_height(self):
+        if len(self.product_tmpl_id) == 1:
+            self.product_tmpl_id.height = self.height
+
+    @api.depends('width', 'product_tmpl_id.width')
+    def _compute_template_variant_width(self):
+        width_field = self.filtered(lambda template: len(template.product_tmpl_id) == 1)
+        for width_v in width_field:
+            width_v.width = width_v.product_tmpl_id.width
+        for template in (self - width_field):
+            template.width = False
+
+    @api.one
+    def _set_width(self):
+        if len(self.product_tmpl_id) == 1:
+            self.product_tmpl_id.width = self.width
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
@@ -60,6 +98,14 @@ class ProductTemplate(models.Model):
         self.volume = self._calc_volume(
             self.length, self.height, self.width, self.dimensional_uom_id)
 
+    length = fields.Float()
+    height = fields.Float()
+    width = fields.Float()
+    dimensional_uom_id = fields.Many2one(
+        'product.uom',
+        'Dimensional UoM', related='product_variant_ids.dimensional_uom_id',
+        help='UoM for length, height, width')
+
     def convert_to_meters(self, measure, dimensional_uom):
         uom_meters = self.env.ref('product.product_uom_meter')
 
@@ -68,11 +114,3 @@ class ProductTemplate(models.Model):
             to_unit=uom_meters,
             round=False,
         )
-
-    length = fields.Float(related='product_variant_ids.length')
-    height = fields.Float(related='product_variant_ids.height')
-    width = fields.Float(related='product_variant_ids.width')
-    dimensional_uom_id = fields.Many2one(
-        'product.uom',
-        'Dimensional UoM', related='product_variant_ids.dimensional_uom_id',
-        help='UoM for length, height, width')
